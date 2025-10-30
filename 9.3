@@ -1,0 +1,78 @@
+1️⃣ Build the Full Stack Application
+Create a simple app:
+
+/fullstack-app
+   ├── client/        # React frontend
+   ├── server/        # Node.js + Express backend
+2️⃣ Prepare AWS Environment
+Create a VPC (Virtual Private Cloud)
+
+Include public and private subnets
+
+Configure Internet Gateway for public access
+
+Set Up Security Groups
+
+Frontend EC2 Security Group: Allow HTTP (80) and SSH (22)
+
+Backend EC2 Security Group: Allow HTTP (3000) and SSH (22); limit inbound to ALB’s security group
+
+3️⃣ Launch EC2 Instances
+Frontend Instance:
+
+AMI: Amazon Linux 2 or Ubuntu
+
+Install Node.js and Nginx
+
+Serve the React app via Nginx
+
+bash
+Copy code
+sudo yum install -y nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+Copy the React build files into /usr/share/nginx/html
+
+Backend Instances (2 or more):
+
+Install Node.js and your backend code
+
+bash
+Copy code
+git clone https://github.com/<your-repo>/server.git
+cd server
+npm install
+node index.js
+Ensure your backend runs on port 3000
+
+4️⃣ Set Up Load Balancer
+Navigate to EC2 → Load Balancers → Create Load Balancer
+
+Choose Application Load Balancer (ALB)
+
+Configure:
+
+Listeners: HTTP on port 80
+
+Availability Zones: Select multiple for redundancy
+
+Target Group: Add your backend EC2 instances (port 3000)
+
+Register both backend instances to the target group.
+
+5️⃣ Test Load Balancing
+Access the Load Balancer DNS name (shown in AWS console)
+
+Try refreshing multiple times — requests should be distributed between backend servers (you can verify with unique console logs or instance IDs per server).
+
+6️⃣ (Optional) Set Up Route 53 Domain
+Purchase or connect your domain in AWS Route 53
+
+Create a new A Record pointing to your Load Balancer DNS
+
+Type: A
+
+Alias: Yes → Choose your ALB name
+
+Your app will now be accessible via your domain, e.g.
+👉 https://yourdomain.com
